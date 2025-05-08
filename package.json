@@ -1,0 +1,46 @@
+{
+  "name": "online-bookstore",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "scripts": {
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:seed": "prisma db seed",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "postinstall": "npx prisma generate --no-engine && npx prisma migrate deploy && npx prisma db seed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farhanmualif/online-bookstore.git"
+  },
+  "author": "Farhan Mualif",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/farhanmualif/online-bookstore/issues"
+  },
+  "homepage": "https://github.com/farhanmualif/online-bookstore#readme",
+  "description": "",
+  "dependencies": {
+    "@faker-js/faker": "^9.7.0",
+    "@prisma/client": "^6.7.0",
+    "@prisma/extension-accelerate": "^1.3.0",
+    "@prisma/ppg-tunnel": "^0.3.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "ms": "^2.1.3",
+    "nodemon": "^3.1.10",
+    "zod": "^3.24.4",
+    "zod-validation-error": "^3.4.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.7.0"
+  }
+}

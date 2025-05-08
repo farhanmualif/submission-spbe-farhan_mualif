@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Autors {
+  id        String   @id @default(cuid())
+  name      String
+  bio       String
+  birtdate  DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Books     Books[]
+}
+
+model Customers {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  password  String
+  address   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Invoices  Invoices[]
+  Cart      Cart[]
+  Token     Token[]
+}
+
+model Books {
+  id              String          @id @default(cuid())
+  title           String
+  isbn            String          @unique
+  publicationYear Int
+  genre           String
+  authorID        String
+  author          Autors          @relation(fields: [authorID], references: [id])
+  status          String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  BooksProducts   BooksProducts[]
+  CartItems       CartItems[]
+  InvoiceItems    InvoiceItems[]
+}
+
+model Warehouses {
+  id            String          @id @default(cuid())
+  name          String
+  address       String
+  location      String
+  capacity      String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  BooksProducts BooksProducts[]
+}
+
+model BooksProducts {
+  id          String      @id @default(cuid())
+  bookID      String
+  book        Books       @relation(fields: [bookID], references: [id])
+  price       Float
+  stock       Int
+  format      String
+  warehouseID String
+  warehouse   Warehouses? @relation(fields: [warehouseID], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  CartItems   CartItems[]
+}
+
+model Cart {
+  id         String      @id @default(cuid())
+  customerID String
+  customer   Customers   @relation(fields: [customerID], references: [id])
+  createdAt  DateTime    @default(now())
+  CartItems  CartItems[]
+  Invoices   Invoices[]
+}
+
+model CartItems {
+  id        String        @id @default(cuid())
+  cartID    String
+  cart      Cart          @relation(fields: [cartID], references: [id])
+  productID String
+  product   BooksProducts @relation(fields: [productID], references: [id])
+  quantity  Int
+  createdAt DateTime      @default(now())
+  Books     Books?        @relation(fields: [booksId], references: [id])
+  booksId   String?
+}
+
+model Invoices {
+  id           String         @id @default(cuid())
+  totalAmount  Float
+  issuedAt     DateTime
+  status       String
+  customerID   String
+  customer     Customers      @relation(fields: [customerID], references: [id])
+  cartID       String
+  cart         Cart           @relation(fields: [cartID], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  InvoiceItems InvoiceItems[]
+}
+
+model InvoiceItems {
+  id        String   @id @default(cuid())
+  bookID    String
+  book      Books    @relation(fields: [bookID], references: [id])
+  quantity  Int
+  price     Float
+  invoiceID String
+  invoice   Invoices @relation(fields: [invoiceID], references: [id])
+}
+
+model Token {
+  id         String    @id @default(cuid())
+  token      String    @unique
+  customerId String
+  customer   Customers @relation(fields: [customerId], references: [id])
+  createdAt  DateTime  @default(now())
+  expiredAt  DateTime
+}
